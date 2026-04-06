@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAC Coding LLC — Custom Software, AI & Web Solutions</title>
+<style>
+  :root {
+    --bg: #07070F;
+    --surface: #0F0F1A;
+    --surface2: #16162A;
+    --border: rgba(255,255,255,0.07);
+    --blue: #4F6EF7;
+    --blue-light: #7B93FF;
+    --blue-glow: rgba(79,110,247,0.18);
+    --text: #F0F0FF;
+    --text-dim: #8888AA;
+    --text-muted: #555575;
+    --green: #34D399;
+    --yellow: #FBBF24;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2rem;
+    background: rgba(7,7,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: .6rem;
+    font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none;
+  }
+  .nav-logo .logo-mark {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: .95rem; color: #fff;
+    letter-spacing: -.03em;
+  }
+  .nav-links { display: flex; align-items: center; gap: .25rem; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: .9rem;
+    padding: .45rem .75rem; border-radius: var(--radius-sm);
+    transition: color .2s, background .2s;
+  }
+  .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .lang-toggle {
+    display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; margin-left: .5rem;
+  }
+  .lang-toggle button {
+    background: none; border: none; color: var(--text-dim);
+    padding: .35rem .65rem; font-size: .82rem; font-weight: 600;
+    cursor: pointer; transition: background .2s, color .2s;
+  }
+  .lang-toggle button.active { background: var(--blue); color: #fff; }
+  .nav-links a.nav-cta {
+    background: var(--blue); color: #fff; border: none;
+    padding: .5rem 1.2rem; border-radius: var(--radius-sm);
+    font-size: .88rem; font-weight: 600; cursor: pointer;
+    text-decoration: none; margin-left: .75rem;
+    transition: background .2s, transform .15s;
+  }
+  .nav-links a.nav-cta:hover { background: var(--blue-light); color: #fff; transform: translateY(-1px); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: .4rem; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 7rem 1.5rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 0%, rgba(79,110,247,0.13) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 80% 80%, rgba(79,110,247,0.07) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 80%);
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 780px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(79,110,247,0.12); border: 1px solid rgba(79,110,247,0.3);
+    color: var(--blue-light); font-size: .82rem; font-weight: 600;
+    padding: .35rem .9rem; border-radius: 100px; margin-bottom: 1.75rem;
+  }
+  .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-light); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .hero h1 {
+    font-size: clamp(2.4rem, 5.5vw, 4rem);
+    font-weight: 800; line-height: 1.12; letter-spacing: -.03em;
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 span { color: var(--blue-light); }
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-dim); max-width: 560px; margin: 0 auto 2.5rem;
+  }
+  .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--blue); color: #fff;
+    padding: .85rem 2rem; border-radius: var(--radius-sm);
+    font-size: .95rem; font-weight: 600; text-decoration: none;
+    transition: background .2s, transform .15s, box-shadow .2s;
+    box-shadow: 0 0 0 0 rgba(79,110,247,0);
+  }
+  .btn-primary:hover { background: var(--blue-light); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(79,110,247,0.35); }
+  .btn-secondary {
+    background: transparent; color: var(--text);
+    padding: .85rem 2rem; border-radius: var(--radius-sm);
+    font-size: .95rem; font-weight: 600; text-decoration: none;
+    border: 1px solid var(--border); transition: border-color .2s, background .2s;
+  }
+  .btn-secondary:hover { border-color: var(--blue); background: var(--blue-glow); }
+
+  /* ── STATS ── */
+  .stats {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    max-width: 700px; margin: 0 auto;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; position: relative; z-index: 1; margin-top: 4rem;
+  }
+  .stat { padding: 1.5rem; text-align: center; border-right: 1px solid var(--border); }
+  .stat:last-child { border-right: none; }
+  .stat .val { font-size: 1.6rem; font-weight: 800; color: var(--blue-light); }
+  .stat .lbl { font-size: .78rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .07em; margin-top: .2rem; }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 1.5rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--blue-light); margin-bottom: .75rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800;
+    letter-spacing: -.025em; line-height: 1.2; margin-bottom: .75rem;
+  }
+  .section-sub { color: var(--text-dim); font-size: 1.05rem; max-width: 520px; margin-bottom: 3rem; }
+
+  /* ── SERVICES ── */
+  .services-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;
+  }
+  .service-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.75rem;
+    transition: border-color .25s, transform .2s, box-shadow .25s;
+    position: relative; overflow: hidden;
+  }
+  .service-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--blue); opacity: 0; transition: opacity .25s;
+  }
+  .service-card:hover { border-color: rgba(79,110,247,0.35); transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+  .service-card:hover::before { opacity: 1; }
+  .service-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--blue-glow); border: 1px solid rgba(79,110,247,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; margin-bottom: 1rem;
+  }
+  .service-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
+  .service-card p { font-size: .88rem; color: var(--text-dim); line-height: 1.6; }
+
+  /* ── PROJECTS ── */
+  .projects-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  .project-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.75rem; position: relative;
+    transition: border-color .25s, transform .2s;
+  }
+  .project-card:hover { border-color: rgba(79,110,247,0.3); transform: translateY(-2px); }
+  .project-tag {
+    display: inline-block; font-size: .72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .08em; padding: .2rem .6rem; border-radius: 100px;
+    margin-bottom: 1rem;
+  }
+  .tag-live { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+  .tag-soon { background: rgba(251,191,36,0.1); color: var(--yellow); border: 1px solid rgba(251,191,36,0.2); }
+  .project-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: .5rem; }
+  .project-card p { font-size: .88rem; color: var(--text-dim); margin-bottom: 1.25rem; }
+  .project-link {
+    display: inline-flex; align-items: center; gap: .4rem;
+    color: var(--blue-light); font-size: .85rem; font-weight: 600; text-decoration: none;
+    transition: gap .2s;
+  }
+  .project-link:hover { gap: .65rem; }
+  .project-link svg { transition: transform .2s; }
+  .project-link:hover svg { transform: translateX(2px); }
+  .coming-soon-badge {
+    display: inline-flex; align-items: center; gap: .35rem;
+    font-size: .82rem; color: var(--yellow); font-weight: 600;
+  }
+
+  /* ── WHY US ── */
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .why-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+  }
+  .why-icon {
+    width: 40px; height: 40px; flex-shrink: 0; border-radius: 9px;
+    background: var(--blue-glow); display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+  .why-item h4 { font-size: .95rem; font-weight: 700; margin-bottom: .3rem; }
+  .why-item p { font-size: .85rem; color: var(--text-dim); }
+
+  /* ── CTA ── */
+  .cta-section {
+    text-align: center; padding: 6rem 1.5rem;
+    background: linear-gradient(135deg, rgba(79,110,247,0.08) 0%, rgba(79,110,247,0.03) 100%);
+    border-top: 1px solid var(--border);
+  }
+  .cta-section h2 {
+    font-size: clamp(2rem, 4vw, 3rem); font-weight: 800;
+    letter-spacing: -.03em; margin-bottom: 1rem;
+  }
+  .cta-section p { color: var(--text-dim); font-size: 1.05rem; max-width: 480px; margin: 0 auto 2.5rem; }
+  .email-link {
+    color: var(--blue-light); text-decoration: none; font-size: .9rem;
+    display: inline-block; margin-top: 1.25rem; opacity: .75;
+    transition: opacity .2s;
+  }
+  .email-link:hover { opacity: 1; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-inner { max-width: 1100px; margin: 0 auto; width: 100%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  footer .footer-logo { font-weight: 700; color: var(--text-dim); font-size: .9rem; }
+  footer .footer-links { display: flex; gap: 1.5rem; }
+  footer .footer-links a { color: var(--text-muted); text-decoration: none; font-size: .85rem; transition: color .2s; }
+  footer .footer-links a:hover { color: var(--text-dim); }
+  footer .footer-copy { color: var(--text-muted); font-size: .8rem; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    nav { padding: .9rem 1.25rem; }
+    .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(7,7,15,0.97); backdrop-filter: blur(16px); padding: 1rem 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .nav-links.open { display: flex; }
+    .hamburger { display: flex; }
+    .why-grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .stat { border-right: none; border-bottom: 1px solid var(--border); }
+    .stat:last-child { border-bottom: none; }
+    footer .footer-inner { flex-direction: column; text-align: center; }
+  }
+  @media (max-width: 480px) {
+    .hero-actions { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <div class="logo-mark">A</div>
+    AAC Coding
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="#services" data-en="Services" data-es="Servicios">Services</a>
+    <a href="#projects" data-en="Projects" data-es="Proyectos">Projects</a>
+    <a href="#why" data-en="About" data-es="Nosotros">About</a>
+    <a href="#contact" data-en="Contact" data-es="Contacto">Contact</a>
+    <div class="lang-toggle">
+      <button id="btnEN" class="active" onclick="setLang('en')">EN</button>
+      <button id="btnES" onclick="setLang('es')">ES</button>
+    </div>
+    <a href="mailto:info@aaccoding.com" class="nav-cta" data-en="Get in Touch" data-es="Contáctanos">Get in Touch</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:.75rem;">
+    <div class="lang-toggle" id="langToggleNav">
+      <button id="btnENm" class="active" onclick="setLang('en')">EN</button>
+      <button id="btnESm" onclick="setLang('es')">ES</button>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      <span data-en="AAC Coding LLC — Bilingual Tech Partner" data-es="AAC Coding LLC — Tu socio tecnológico bilingüe">AAC Coding LLC — Bilingual Tech Partner</span>
+    </div>
+    <h1>
+      <span data-en="Code that moves your" data-es="Código que impulsa tu">Code that moves your</span><br>
+      <span data-en="business forward." data-es="negocio hacia adelante.">business <span>forward.</span></span>
+    </h1>
+    <p data-en="Custom software, web apps, AI solutions and strategic consulting — built for businesses that want to grow smarter and faster." data-es="Software a medida, aplicaciones web, soluciones de IA y consultoría estratégica — construidas para empresas que quieren crecer más rápido.">Custom software, web apps, AI solutions and strategic consulting — built for businesses that want to grow smarter and faster.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary" data-en="Start a Project →" data-es="Iniciar un proyecto →">Start a Project →</a>
+      <a href="#services" class="btn-secondary" data-en="Explore Services" data-es="Ver Servicios">Explore Services</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat">
+        <div class="val">100%</div>
+        <div class="lbl" data-en="Commitment" data-es="Compromiso">Commitment</div>
+      </div>
+      <div class="stat">
+        <div class="val" data-en="Bilingual" data-es="Bilingüe">Bilingual</div>
+        <div class="lbl" data-en="EN + ES Support" data-es="Soporte EN + ES">EN + ES Support</div>
+      </div>
+      <div class="stat">
+        <div class="val" data-en="Tailored" data-es="A tu medida">Tailored</div>
+        <div class="lbl" data-en="Solutions" data-es="Soluciones">Solutions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-label" data-en="What We Do" data-es="Qué Hacemos">What We Do</div>
+    <h2 class="section-title" data-en="Our Expertise" data-es="Nuestra Experiencia">Our Expertise</h2>
+    <p class="section-sub" data-en="Comprehensive technical solutions tailored to your unique business challenges." data-es="Soluciones técnicas integrales adaptadas a los desafíos únicos de tu negocio.">Comprehensive technical solutions tailored to your unique business challenges.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">💻</div>
+        <h3 data-en="Custom Software & Apps" data-es="Software y Apps a Medida">Custom Software & Apps</h3>
+        <p data-en="Scalable, high-performance applications built from the ground up — web, mobile, and desktop." data-es="Aplicaciones escalables y de alto rendimiento — web, móvil y escritorio.">Scalable, high-performance applications built from the ground up — web, mobile, and desktop.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🌐</div>
+        <h3 data-en="Web Development" data-es="Desarrollo Web">Web Development</h3>
+        <p data-en="Fast, modern websites and web platforms that convert visitors into customers and look great on any device." data-es="Sitios web modernos y rápidos que convierten visitantes en clientes y se ven bien en cualquier dispositivo.">Fast, modern websites and web platforms that convert visitors into customers and look great on any device.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🤖</div>
+        <h3 data-en="AI Solutions" data-es="Soluciones de IA">AI Solutions</h3>
+        <p data-en="Intelligent automation, LLM integrations, and machine learning features that give your product a competitive edge." data-es="Automatización inteligente, integraciones de LLM y características de machine learning para diferenciarte.">Intelligent automation, LLM integrations, and machine learning features that give your product a competitive edge.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🧭</div>
+        <h3 data-en="Technology Consulting" data-es="Consultoría Tecnológica">Technology Consulting</h3>
+        <p data-en="Strategic guidance on architecture, tech stack selection, and digital transformation for modern businesses." data-es="Guía estratégica en arquitectura, selección de tecnologías y transformación digital para negocios modernos.">Strategic guidance on architecture, tech stack selection, and digital transformation for modern businesses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="projects-section">
+  <div class="container">
+    <div class="section-label" data-en="Our Work" data-es="Nuestros Proyectos">Our Work</div>
+    <h2 class="section-title" data-en="What We've Built" data-es="Lo Que Hemos Construido">What We've Built</h2>
+    <p class="section-sub" data-en="A selection of products we've designed, built, and shipped." data-es="Una selección de productos que hemos diseñado, construido y lanzado.">A selection of products we've designed, built, and shipped.</p>
+    <div class="projects-grid">
+      <!-- AlcaStars -->
+      <div class="project-card">
+        <span class="project-tag tag-live" data-en="Live" data-es="En vivo">Live</span>
+        <h3>AlcaStars</h3>
+        <p data-en="A Yelp-like local business directory for Venezuela — helping people discover the best businesses in their city, with reviews, ratings, and rich business profiles." data-es="Un directorio de negocios locales tipo Yelp para Venezuela — ayuda a las personas a descubrir los mejores negocios de su ciudad, con reseñas, calificaciones y perfiles detallados.">A Yelp-like local business directory for Venezuela — helping people discover the best businesses in their city, with reviews, ratings, and rich business profiles.</p>
+        <a href="https://alcastars.com.ve" target="_blank" rel="noopener" class="project-link">
+          alcastars.com.ve
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <!-- AlcaSoftware -->
+      <div class="project-card">
+        <span class="project-tag tag-live" data-en="Live" data-es="En vivo">Live</span>
+        <h3>AlcaSoftware</h3>
+        <p data-en="A professional software company website showcasing services, case studies, and a modern digital presence — built to convert." data-es="Sitio web de empresa de software profesional que muestra servicios, casos de estudio y una presencia digital moderna — construido para convertir.">A professional software company website showcasing services, case studies, and a modern digital presence — built to convert.</p>
+        <a href="https://alcasoftware.com" target="_blank" rel="noopener" class="project-link">
+          alcasoftware.com
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <!-- AlcaHub -->
+      <div class="project-card">
+        <span class="project-tag tag-soon" data-en="Coming Soon" data-es="Próximamente">Coming Soon</span>
+        <h3>AlcaHub</h3>
+        <p data-en="The next platform in the Alca ecosystem — designed to connect businesses, services, and communities across Latin America." data-es="La próxima plataforma del ecosistema Alca — diseñada para conectar negocios, servicios y comunidades en Latinoamérica.">The next platform in the Alca ecosystem — designed to connect businesses, services, and communities across Latin America.</p>
+        <span class="coming-soon-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span data-en="In development" data-es="En desarrollo">In development</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="why">
+  <div class="container">
+    <div class="section-label" data-en="Why AAC Coding" data-es="Por Qué AAC Coding">Why AAC Coding</div>
+    <h2 class="section-title" data-en="Built different." data-es="Distintos por diseño.">Built different.</h2>
+    <p class="section-sub" data-en="We're not just a vendor — we're a long-term technical partner for businesses serious about technology." data-es="No somos solo un proveedor — somos un socio técnico a largo plazo para negocios serios en tecnología.">We're not just a vendor — we're a long-term technical partner for businesses serious about technology.</p>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-icon">🌎</div>
+        <div>
+          <h4 data-en="Truly Bilingual" data-es="Verdaderamente Bilingüe">Truly Bilingual</h4>
+          <p data-en="We work comfortably in English and Spanish — no language barriers, full context preserved." data-es="Trabajamos con fluidez en inglés y español — sin barreras de idioma, contexto completo preservado.">We work comfortably in English and Spanish — no language barriers, full context preserved.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">⚡</div>
+        <div>
+          <h4 data-en="Fast & Focused" data-es="Rápido y Enfocado">Fast & Focused</h4>
+          <p data-en="Lean team, high output. We move quickly without sacrificing quality or communication." data-es="Equipo pequeño, alta productividad. Nos movemos rápido sin sacrificar calidad ni comunicación.">Lean team, high output. We move quickly without sacrificing quality or communication.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">🔒</div>
+        <div>
+          <h4 data-en="Reliable & Committed" data-es="Confiables y Comprometidos">Reliable & Committed</h4>
+          <p data-en="We take ownership of every project. Your success is the only metric that matters." data-es="Nos apropiamos de cada proyecto. Tu éxito es el único indicador que importa.">We take ownership of every project. Your success is the only metric that matters.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">🧠</div>
+        <div>
+          <h4 data-en="AI-Ready" data-es="Preparados para la IA">AI-Ready</h4>
+          <p data-en="We integrate modern AI capabilities into your products — from LLMs to automation pipelines." data-es="Integramos capacidades modernas de IA en tus productos — desde LLMs hasta pipelines de automatización.">We integrate modern AI capabilities into your products — from LLMs to automation pipelines.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / CONTACT -->
+<section id="contact" class="cta-section">
+  <h2 data-en="Ready to build something exceptional?" data-es="¿Listo para construir algo excepcional?">Ready to build something exceptional?</h2>
+  <p data-en="Let's talk about your project. We respond within 24 hours." data-es="Hablemos de tu proyecto. Respondemos en menos de 24 horas.">Let's talk about your project. We respond within 24 hours.</p>
+  <a href="mailto:info@aaccoding.com" class="btn-primary" style="display:inline-block;" data-en="Send us an Email →" data-es="Envíanos un email →">Send us an Email →</a>
+  <br>
+  <a href="mailto:info@aaccoding.com" class="email-link">info@aaccoding.com</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-logo">© 2025 AAC Coding LLC. <span data-en="All rights reserved." data-es="Todos los derechos reservados.">All rights reserved.</span></span>
+    <div class="footer-links">
+      <a href="https://alcastars.com.ve" target="_blank">AlcaStars</a>
+      <a href="https://alcasoftware.com" target="_blank">AlcaSoftware</a>
+      <a href="mailto:info@aaccoding.com">info@aaccoding.com</a>
+    </div>
+    <span class="footer-copy" data-en="Precision. Innovation. Results." data-es="Precisión. Innovación. Resultados.">Precision. Innovation. Results.</span>
+  </div>
+</footer>
+
+<script>
+  // Language toggle
+  let lang = 'en';
+  function setLang(l) {
+    lang = l;
+    document.querySelectorAll('[data-en]').forEach(el => {
+      // For elements with both en/es, use textContent unless they have child elements
+      if (el.children.length === 0) {
+        el.textContent = l === 'en' ? el.dataset.en : el.dataset.es;
+      }
+    });
+    // Handle hero h1 specially (has nested span)
+    const h1Spans = document.querySelectorAll('.hero h1 span[data-en]');
+    h1Spans.forEach(s => {
+      if (s.children.length === 0) {
+        s.textContent = l === 'en' ? s.dataset.en : s.dataset.es;
+      }
+    });
+    // Active state
+    ['btnEN','btnENm'].forEach(id => {
+      const b = document.getElementById(id);
+      if(b) b.classList.toggle('active', l === 'en');
+    });
+    ['btnES','btnESm'].forEach(id => {
+      const b = document.getElementById(id);
+      if(b) b.classList.toggle('active', l === 'es');
+    });
+    document.documentElement.lang = l;
+  }
+
+  // Mobile nav
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  // Close menu on link click
+  document.querySelectorAll('#navLinks a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('navLinks').classList.remove('open');
+    });
+  });
+
+  // Nav scroll shadow
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('nav');
+    nav.style.boxShadow = window.scrollY > 20 ? '0 4px 30px rgba(0,0,0,0.5)' : 'none';
+  });
+</script>
+</body>
+</html>
